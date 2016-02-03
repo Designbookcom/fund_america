@@ -7,15 +7,23 @@ module FundAmerica
       # Handles response and errors
       def request method, uri, options={}
         options = FundAmerica.basic_auth.merge!({:body => options})
+        options[:headers] = {'Content-Type' => 'application/json'}
         response = HTTParty.send(method, uri, options)
-        parsed_response = JSON.parse(response.body)
-        if response.code.to_i == 200
+        code = response.code.to_i
+
+        if response.content_type =~ /json/
+          parsed_response = JSON.parse(response.body)
+        else
+          parsed_response = {content_type: response.content_type, content: response.body}
+        end
+
+        if code == 200
           # Returns parsed_response - a hash of response body
           # if response is successful
           parsed_response
         else
           # Raises error if the response is not sucessful
-          raise FundAmerica::Error.new(parsed_response, response.code.to_i)
+          raise FundAmerica::Error.new(parsed_response, code)
         end
       end
 
