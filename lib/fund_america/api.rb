@@ -7,7 +7,6 @@ module FundAmerica
       # Handles response and errors
       def request method, uri, options={}
         options = FundAmerica.basic_auth.merge!({:body => options})
-        options[:headers] = {'Content-Type' => 'application/json'}
         response = HTTParty.send(method, uri, options)
         code = response.code.to_i
 
