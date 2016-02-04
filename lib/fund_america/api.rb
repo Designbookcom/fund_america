@@ -14,7 +14,11 @@ module FundAmerica
         if response.content_type =~ /json/
           parsed_response = JSON.parse(response.body)
         else
-          parsed_response = {content_type: response.content_type, content: response.body}
+          parsed_response = {
+            code: code,
+            content_type: response.content_type,
+            content: response.body
+          }
         end
 
         if code == 200
